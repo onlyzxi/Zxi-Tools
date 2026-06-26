@@ -28,7 +28,7 @@ javascript:(function() {
         t: `${RAILWAY_SERVER_URL}/?file=button.txt`,
         m: `${RAILWAY_SERVER_URL}/?file=music.txt`,
         n: `${RAILWAY_SERVER_URL}/?file=name.txt`, 
-        s: 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,0.09);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);color:#fff;padding:35px 30px;border-radius:28px;z-index:2147483647;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;text-align:center;box-shadow:0 30px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.25);width:330px;box-sizing:border-box;'
+        s: 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,0.08);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);color:#fff;padding:35px 30px;border-radius:28px;z-index:2147483647;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;text-align:center;box-shadow:0 30px 70px rgba(0,0,0,0.6), inset 0 2px 0 rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.25);width:330px;box-sizing:border-box;'
     };
 
     let zxiAudio = null;
@@ -73,9 +73,8 @@ javascript:(function() {
         const styleSheet = document.createElement("style");
         styleSheet.textContent = `
             @keyframes zxi-liquid-glow {
-                0% { box-shadow: 0 0 20px rgba(103,232,249,0.6), inset 0 0 15px rgba(255,255,255,0.3); }
-                50% { box-shadow: 0 0 45px rgba(103,232,249,0.9), inset 0 0 25px rgba(255,255,255,0.45); }
-                100% { box-shadow: 0 0 20px rgba(103,232,249,0.6), inset 0 0 15px rgba(255,255,255,0.3); }
+                0%,100% { box-shadow: 0 0 25px rgba(103,232,249,0.6), inset 0 0 20px rgba(255,255,255,0.35); }
+                50% { box-shadow: 0 0 50px rgba(103,232,249,0.9), inset 0 0 30px rgba(255,255,255,0.5); }
             }
             @keyframes zxi-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
             @keyframes zxi-fire-spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
@@ -84,19 +83,19 @@ javascript:(function() {
                 position: fixed; bottom: 18px; right: 22px; font-size: 17px; font-weight: 700;
                 font-family: -apple-system, BlinkMacSystemFont, sans-serif; letter-spacing: 0.5px;
                 z-index: 2147483647; text-decoration: none; cursor: pointer;
-                color: rgba(224,242,254,0.9); text-shadow: 0 0 15px rgba(103,232,249,0.7);
+                color: rgba(224,242,254,0.95); text-shadow: 0 0 15px rgba(103,232,249,0.8);
             }
             
             .zxi-mode-btn {
-                width: 100%; padding: 16px 14px; border-radius: 20px; font-weight: 700;
+                width: 100%; padding: 16px; border-radius: 20px; font-weight: 700;
                 cursor: pointer; font-size: 15.5px; letter-spacing: 0.6px; margin-bottom: 14px;
-                border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.08);
-                backdrop-filter: blur(25px); color: #fff; transition: all 0.4s cubic-bezier(0.23,1,0.32,1);
-                box-shadow: 0 8px 25px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.25);
+                border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.09);
+                backdrop-filter: blur(25px); color: #fff; transition: all 0.45s cubic-bezier(0.23,1,0.32,1);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
             }
             .zxi-mode-btn:hover {
-                transform: translateY(-4px); background: rgba(255,255,255,0.18);
-                box-shadow: 0 15px 35px rgba(103,232,249,0.45);
+                transform: translateY(-4px); background: rgba(255,255,255,0.2);
+                box-shadow: 0 18px 40px rgba(103,232,249,0.5);
             }
             
             .zxi-btn-fast { border-color: #67e8f9; }
@@ -118,7 +117,7 @@ javascript:(function() {
 
         const musicBtn = document.createElement('button');
         musicBtn.id = 'zxi-music-btn';
-        musicBtn.style.cssText = 'position:fixed; bottom:18px; left:18px; background:rgba(255,255,255,0.1); backdrop-filter:blur(25px); border:1px solid rgba(255,255,255,0.3); color:#fff; border-radius:50%; width:56px; height:56px; cursor:pointer; font-size:24px; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(0,0,0,0.4); z-index:2147483647;';
+        musicBtn.style.cssText = 'position:fixed; bottom:20px; left:20px; background:rgba(255,255,255,0.1); backdrop-filter:blur(25px); border:1px solid rgba(255,255,255,0.3); color:#fff; border-radius:50%; width:56px; height:56px; cursor:pointer; font-size:24px; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(0,0,0,0.4); z-index:2147483647;';
         musicBtn.textContent = '🔇';
         document.body.appendChild(musicBtn);
 
@@ -127,7 +126,7 @@ javascript:(function() {
         box.style.cssText = _d.s;
         
         box.innerHTML = `
-          <h3 style="margin:0 0 8px 0;color:#e0f2fe;font-size:23px;font-weight:800;letter-spacing:1px;">${systemName} SYSTEM</h3>
+          <h3 style="margin:0 0 8px 0;color:#e0f2fe;font-size:23px;font-weight:800;letter-spacing:0.8px;">${systemName} SYSTEM</h3>
           <p style="margin:0 0 26px 0;color:#94a3b8;font-size:13.5px;letter-spacing:1px;">ENTER LICENSE KEY</p>
           <input type="text" id="zxi-key-input" placeholder="ENTER KEY HERE" style="width:100%;padding:16px;margin-bottom:20px;border:1px solid rgba(255,255,255,0.25);border-radius:18px;background:rgba(255,255,255,0.07);color:#fff;text-align:center;font-size:15.5px;outline:none;">
           <button id="zxi-login-btn" style="width:100%;background:linear-gradient(90deg,#67e8f9,#22d3ee);color:#0f172a;border:none;padding:17px;border-radius:18px;font-weight:700;cursor:pointer;font-size:16px;box-shadow:0 10px 25px rgba(103,232,249,0.5);">VERIFY & RUN</button>
@@ -136,7 +135,6 @@ javascript:(function() {
         `;
         document.body.appendChild(box);
 
-        // Music & Visualizer Setup (আগের মতো)
         async function setupVisualizer() {
             if (audioContext) return;
             try {
@@ -171,6 +169,7 @@ javascript:(function() {
                 await setupVisualizer();
                 zxiAudio.play().then(() => {
                     musicBtn.textContent = '🔊'; musicBtn.style.color = '#67e8f9';
+                    musicBtn.style.borderColor = '#67e8f9';
                 }).catch(err => {});
             } else {
                 zxiAudio.pause(); musicBtn.textContent = '🔇'; musicBtn.style.color = '#fff';
@@ -186,13 +185,17 @@ javascript:(function() {
 
         function startVisualizerAnimation(selectedSeconds, redirectUrl) {
             const overlay = document.createElement('div');
-            overlay.style.cssText = `position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.7);backdrop-filter:blur(12px);z-index:2147483647;display:flex;align-items:center;justify-content:center;`;
+            overlay.style.cssText = `
+                position:fixed; top:0; left:0; width:100%; height:100%; 
+                background:rgba(15,23,42,0.65); backdrop-filter:blur(12px); z-index:2147483647; 
+                display:flex; align-items:center; justify-content:center;
+            `;
 
             overlay.innerHTML = `
                 <div style="text-align:center; position:relative;">
                     <div style="position:relative; width:400px; height:400px; margin:0 auto; display:flex; align-items:center; justify-content:center;">
                         <canvas id="zxi-visualizer-canvas" width="400" height="400" style="position:absolute; top:0; left:0; z-index:2; pointer-events:none;"></canvas>
-                        <div id="zxi-glow-core" style="position:absolute; top:50%; left:50%; width:190px; height:190px; border-radius:50%; background:radial-gradient(circle, rgba(103,232,249,0.7) 0%, transparent 70%); filter: blur(35px); transform:translate(-50%,-50%); animation: zxi-liquid-glow 3s ease-in-out infinite; z-index:1;"></div>
+                        <div id="zxi-glow-core" style="position:absolute; top:50%; left:50%; width:190px; height:190px; border-radius:50%; background:radial-gradient(circle, rgba(103,232,249,0.75) 0%, transparent 70%); filter: blur(35px); opacity:0.85; animation: zxi-liquid-glow 2.8s ease-in-out infinite; z-index:1; transform:translate(-50%,-50%);"></div>
                         <svg width="280" height="280" style="transform:rotate(-90deg); position:relative; z-index:3;">
                             <circle cx="140" cy="140" r="105" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="14"></circle>
                             <circle id="progress" cx="140" cy="140" r="105" fill="none" stroke="#67e8f9" stroke-width="14" stroke-dasharray="660" stroke-dashoffset="660" stroke-linecap="round"></circle>
@@ -204,14 +207,91 @@ javascript:(function() {
             `;
             document.body.appendChild(overlay);
 
-            // Visualizer + Timer Logic (আগের মতোই রাখা হয়েছে, শুধু স্টাইল আপডেট)
             const canvas = document.getElementById('zxi-visualizer-canvas');
             const ctx = canvas.getContext('2d');
-            // ... (আপনার আগের drawSpectrum ফাংশন যদি চান তাহলে বলুন, এখন সংক্ষেপে রাখলাম)
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const baseRadius = 88; 
+            let colorHue = 195; 
             
+            const progressRing = overlay.querySelector('#progress');
+            const countdownText = overlay.querySelector('#countdown-text');
+            const redirectLabel = overlay.querySelector('#zxi-redirect-label');
+
+            function drawSpectrum() {
+                animationFrameId = requestAnimationFrame(drawSpectrum);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                colorHue = (colorHue + 0.6) % 360; 
+                const currentNeonColor = `hsl(${colorHue}, 100%, 68%)`;
+                let dynamicRadiusPulse = baseRadius;
+
+                if (analyser && zxiAudio && !zxiAudio.paused) {
+                    analyser.getByteFrequencyData(dataArray);
+                    let lowBass = 0;
+                    for(let b = 0; b < 5; b++) { lowBass += dataArray[b] || 0; }
+                    lowBass = lowBass / 5;
+                    dynamicRadiusPulse = baseRadius + (lowBass / 10);
+                } else if (dataArray) { dataArray.fill(0); }
+
+                const totalPoints = 56; 
+                if (!dataArray) return;
+
+                progressRing.style.stroke = currentNeonColor;
+                countdownText.style.textShadow = `0 0 35px ${currentNeonColor}`;
+                redirectLabel.style.color = currentNeonColor;
+
+                ctx.beginPath();
+                for (let i = 0; i <= totalPoints; i++) {
+                    const angle = (i / totalPoints) * Math.PI * 2;
+                    let mirrorAngle = (i % (totalPoints / 4)) / (totalPoints / 4) * Math.PI * 0.5;
+                    let baseIdx = Math.floor(Math.sin(mirrorAngle) * (dataArray.length * 0.65));
+                    let sideIdx = (baseIdx + 2) % dataArray.length;
+                    let blendedVal = ((dataArray[baseIdx] || 0) * 0.7) + ((dataArray[sideIdx] || 0) * 0.3);
+                    
+                    let normalized = blendedVal / 255;
+                    let boostedVal = Math.min(255, Math.pow(normalized, 1.1) * 255 * 6);
+
+                    const iSpikeTip = (i % 2 === 0); 
+                    let sharpHeight = iSpikeTip ? (5 + ((boostedVal / 255) * 52)) : (-3 + ((boostedVal / 255) * 5));
+                    const finalPointsRadius = dynamicRadiusPulse + sharpHeight;
+
+                    const x = centerX + Math.cos(angle) * finalPointsRadius;
+                    const y = centerY + Math.sin(angle) * finalPointsRadius;
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.lineWidth = 4; ctx.strokeStyle = currentNeonColor; ctx.shadowBlur = 18; ctx.shadowColor = currentNeonColor;
+                ctx.stroke();
+
+                ctx.beginPath();
+                for (let i = 0; i <= totalPoints; i++) {
+                    const angle = (i / totalPoints) * Math.PI * 2;
+                    let mirrorAngle = (i % (totalPoints / 4)) / (totalPoints / 4) * Math.PI * 0.5;
+                    let baseIdx = Math.floor(Math.sin(mirrorAngle) * (dataArray.length * 0.65));
+                    let sideIdx = (baseIdx + 2) % dataArray.length;
+                    let blendedVal = ((dataArray[baseIdx] || 0) * 0.7) + ((dataArray[sideIdx] || 0) * 0.3);
+                    
+                    let normalized = blendedVal / 255;
+                    let boostedVal = Math.min(255, Math.pow(normalized, 1.1) * 255 * 6);
+                    
+                    const iSpikeTip = (i % 2 === 0);
+                    let sharpHeight = iSpikeTip ? (5 + ((boostedVal / 255) * 52)) : (-3 + ((boostedVal / 255) * 5));
+                    const finalPointsRadiusInner = dynamicRadiusPulse + (sharpHeight * 0.9);
+
+                    const x = centerX + Math.cos(angle) * finalPointsRadiusInner;
+                    const y = centerY + Math.sin(angle) * finalPointsRadiusInner;
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.lineWidth = 1.4; ctx.strokeStyle = '#ffffff'; ctx.shadowBlur = 6; ctx.shadowColor = '#ffffff';
+                ctx.stroke();
+                ctx.shadowBlur = 0; 
+            }
+            drawSpectrum();
+
             let timeLeft = selectedSeconds;
             const progress = overlay.querySelector('#progress');
-            const countdownText = overlay.querySelector('#countdown-text');
             const circumference = 660;
 
             const timer = setInterval(() => {
@@ -220,9 +300,10 @@ javascript:(function() {
                 progress.style.strokeDashoffset = circumference * (timeLeft / selectedSeconds);
 
                 if (timeLeft <= 0) {
-                    clearInterval(timer);
+                    clearInterval(timer); cancelAnimationFrame(animationFrameId);
                     if(zxiAudio) zxiAudio.pause();
-                    overlay.remove();
+                    if(musicBtn) musicBtn.remove();
+                    overlay.remove(); 
                     window.location.replace(redirectUrl);
                 }
             }, 1000);
@@ -231,25 +312,44 @@ javascript:(function() {
         function triggerAincradExecutionFlow(selectedSeconds, fileSourceUrl, isProxyMode = false) {
             box.remove();
             const checkOverlay = document.createElement('div');
-            checkOverlay.style.cssText = `position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.85);backdrop-filter:blur(12px);z-index:2147483647;display:flex;align-items:center;justify-content:center;`;
+            checkOverlay.style.cssText = `
+                position:fixed; top:0; left:0; width:100%; height:100%; 
+                background:rgba(15,23,42,0.85); backdrop-filter:blur(12px); z-index:2147483647; 
+                display:flex; align-items:center; justify-content:center;
+            `;
             checkOverlay.innerHTML = `
-                <div style="text-align:center; background:rgba(255,255,255,0.09); padding:40px 30px; border-radius:28px; border:1px solid rgba(255,255,255,0.25); width:300px; backdrop-filter:blur(25px); animation: zxi-liquid-glow 3s linear infinite;">
-                    <div style="width: 50px; height: 50px; border: 5px solid rgba(103,232,249,0.2); border-top: 5px solid #67e8f9; border-radius: 50%; margin: 0 auto 20px auto; animation: zxi-spin 0.8s linear infinite;"></div>
-                    <p style="color:#e0f2fe; font-size:15px; font-weight:700; margin:0; letter-spacing:1px;">CHECKING UPDATE...</p>
+                <div style="text-align:center; background:rgba(255,255,255,0.09); padding:40px 35px; border-radius:28px; border:1px solid rgba(255,255,255,0.25); width:300px; backdrop-filter:blur(25px); animation: zxi-liquid-glow 3s linear infinite;">
+                    <div style="width: 52px; height: 52px; border: 5px solid rgba(103,232,249,0.2); border-top: 5px solid #67e8f9; border-radius: 50%; margin: 0 auto 24px auto; animation: zxi-spin 0.9s linear infinite;"></div>
+                    <p id="zxi-check-text" style="color:#e0f2fe; font-size:15.5px; font-weight:700; margin:0; letter-spacing:1px;">CHECKING UPDATE...</p>
                 </div>
             `;
             document.body.appendChild(checkOverlay);
 
             setTimeout(async () => {
-                checkOverlay.remove();
+                let isUpdated = false;
                 try {
-                    const rResp = await fetch(fileSourceUrl + '&user=' + userIndex + '&t=' + Date.now()); 
-                    const finalUrl = (await rResp.text()).trim();
-                    if(finalUrl.startsWith('http')) { 
-                        startVisualizerAnimation(selectedSeconds, finalUrl); 
-                    }
-                } catch(err) { alert("REDIRECT ERROR!"); }
-            }, 1800);
+                    const targetWorkerUrl = isProxyMode 
+                        ? 'https://zxi.zxidesert.workers.dev/?mode=proxy' 
+                        : 'https://zxi.zxidesert.workers.dev/';
+                    const workerRes = await fetch(targetWorkerUrl);
+                    const workerText = await workerRes.text();
+                    if (workerText.includes("GitHub Updated")) isUpdated = true;
+                } catch (err) {}
+
+                const checkTextNode = document.getElementById('zxi-check-text');
+                checkTextNode.innerHTML = isUpdated 
+                    ? "<span style='color:#4ade80;'>Link Updated Successfully ✓</span>" 
+                    : "<span style='color:#fbbf24;'>No Update Available</span>";
+
+                setTimeout(async () => {
+                    checkOverlay.remove();
+                    try {
+                        const rResp = await fetch(fileSourceUrl + '&user=' + userIndex + '&t=' + Date.now()); 
+                        const finalUrl = (await rResp.text()).trim();
+                        if(finalUrl.startsWith('http')) startVisualizerAnimation(selectedSeconds, finalUrl);
+                    } catch(err) { alert("REDIRECT ERROR!"); }
+                }, 1400);
+            }, 2200);
         }
 
         function triggerPowerZxPanel(engineMode) {
@@ -266,29 +366,64 @@ javascript:(function() {
                 <button id="zxi-fetch-bypass-btn" style="width:100%;background:linear-gradient(90deg,#67e8f9,#22d3ee);color:#0f172a;border:none;padding:17px;border-radius:18px;font-weight:700;cursor:pointer;">START BYPASS</button>
                 <div id="zxi-bypass-status" style="margin-top:20px;font-size:13px;font-weight:600;color:#64748b;">READY</div>
             `;
-            // বাকি পাওয়ার প্যানেলের লজিক আগের মতোই রাখা হয়েছে (আপনার অরিজিনাল কোড অনুসারে)
             document.getElementById('zxi-back-btn').addEventListener('click', showMainOptionsPanel);
-            // ... (আপনার আগের fetch logic এখানে যোগ করুন)
+
+            const bypassInput = document.getElementById('zxi-bypass-input');
+            const fetchBtn = document.getElementById('zxi-fetch-bypass-btn');
+            const bStatus = document.getElementById('zxi-bypass-status');
+
+            fetchBtn.addEventListener('click', async () => {
+                const urlVal = bypassInput.value.trim();
+                if (isPlus) {
+                    if (!urlVal || !urlVal.includes('earnlinks.in/')) {
+                        bStatus.innerHTML = "<span style='color:#f87171;'>INVALID LINK! URL MUST BE EARNLINKS.</span>"; return;
+                    }
+                } else {
+                    if (!urlVal || !urlVal.includes('vplink.in/')) {
+                        bStatus.innerHTML = "<span style='color:#f87171;'>INVALID LINK! URL MUST BE VPLINK.</span>"; return;
+                    }
+                }
+
+                bStatus.innerHTML = "<span style='color:#67e8f9;'>BYPASSING...</span>";
+                fetchBtn.disabled = true;
+
+                try {
+                    const response = await fetch(`\( {RAILWAY_SERVER_URL}/api/bypass?mode= \){engineMode}&user=\( {userIndex}&url= \){encodeURIComponent(urlVal)}`);
+                    const data = await response.json();
+                    
+                    if (data && data.status === "success" && data.bypassed_url) {
+                        bStatus.innerHTML = "<span style='color:#4ade80;'>BYPASS SUCCESSFUL ✓</span>";
+                        fetchBtn.outerHTML = `<button id="zxi-copy-bypass-btn" style="width:100%;background:linear-gradient(90deg,#67e8f9,#22d3ee);color:#0f172a;border:none;padding:17px;border-radius:18px;font-weight:700;cursor:pointer;">📋 COPY BYPASS LINK</button>`;
+                        document.getElementById('zxi-copy-bypass-btn').addEventListener('click', () => {
+                            navigator.clipboard.writeText(data.bypassed_url).then(() => {
+                                alert("Link Copied Successfully!");
+                                box.remove();
+                            });
+                        });
+                    } else {
+                        bStatus.innerHTML = "<span style='color:#f87171;'>TRY AGAIN</span>"; fetchBtn.disabled = false;
+                    }
+                } catch (err) {
+                    bStatus.innerHTML = "<span style='color:#f87171;'>SERVER ERROR</span>"; fetchBtn.disabled = false;
+                }
+            });
         }
 
         function showMainOptionsPanel() {
             box.innerHTML = `
-                <button id="zxi-back-btn" style="position:absolute;top:18px;left:20px;background:none;border:none;color:#94a3b8;font-size:26px;cursor:pointer;">←</button>
-                <h3 style="margin:35px 0 12px 0;color:#e0f2fe;font-size:22px;font-weight:800;">SELECT SYSTEM ENGINE</h3>
-                <p style="margin:0 0 28px 0;color:#94a3b8;font-size:13.5px;">CHOOSE YOUR MODULE</p>
+                <h3 style="margin:0 0 8px 0;color:#e0f2fe;font-size:22px;font-weight:800;">SELECT SYSTEM ENGINE</h3>
+                <p style="margin:0 0 26px 0;color:#94a3b8;font-size:13.5px;letter-spacing:1px;">CHOOSE YOUR MODULE</p>
                 <button id="zxi-choice-aincrad" class="zxi-mode-btn zxi-btn-main-choice">❄️ Aincrad</button>
                 <button id="zxi-choice-aincrad-proxy" class="zxi-mode-btn zxi-btn-proxy-choice">🛰️ Aincrad Proxy</button>
                 <button id="zxi-choice-powerzx" class="zxi-mode-btn zxi-btn-secure">🔥 ALL VPLINK</button>
                 <button id="zxi-choice-powerplus" class="zxi-mode-btn zxi-btn-plus">✨ HUNTER +</button>
             `;
 
-            document.getElementById('zxi-back-btn').addEventListener('click', () => location.reload());
-
             document.getElementById('zxi-choice-aincrad').addEventListener('click', () => {
                 box.innerHTML = `
                     <button id="zxi-back-to-main" style="position:absolute;top:18px;left:20px;background:none;border:none;color:#94a3b8;font-size:26px;cursor:pointer;">←</button>
                     <h3 style="margin:35px 0 12px 0;color:#e0f2fe;font-size:21px;font-weight:800;">SELECT MODE</h3>
-                    <p style="margin:0 0 28px 0;color:#94a3b8;font-size:13.5px;">CHOOSE BYPASS METHOD</p>
+                    <p style="margin:0 0 26px 0;color:#94a3b8;font-size:13.5px;">CHOOSE BYPASS METHOD</p>
                     <button id="zxi-btn-fast" class="zxi-mode-btn zxi-btn-fast">⚡ FAST MODE (25s)</button>
                     <button id="zxi-btn-secure" class="zxi-mode-btn zxi-btn-secure">🛡️ SECURE MODE (30s)</button>
                     <button id="zxi-btn-safe" class="zxi-mode-btn zxi-btn-safe">🔐 SAFE MODE (50s)</button>
@@ -303,7 +438,7 @@ javascript:(function() {
                 box.innerHTML = `
                     <button id="zxi-back-to-main" style="position:absolute;top:18px;left:20px;background:none;border:none;color:#94a3b8;font-size:26px;cursor:pointer;">←</button>
                     <h3 style="margin:35px 0 12px 0;color:#e0f2fe;font-size:21px;font-weight:800;">PROXY MODE</h3>
-                    <p style="margin:0 0 28px 0;color:#94a3b8;font-size:13.5px;">CHOOSE PROXY METHOD</p>
+                    <p style="margin:0 0 26px 0;color:#94a3b8;font-size:13.5px;">CHOOSE PROXY METHOD</p>
                     <button id="zxi-proxy-fast" class="zxi-mode-btn zxi-btn-fast">⚡ FAST PROXY (25s)</button>
                     <button id="zxi-proxy-secure" class="zxi-mode-btn zxi-btn-secure">🛡️ SECURE PROXY (30s)</button>
                     <button id="zxi-proxy-safe" class="zxi-mode-btn zxi-btn-safe">🔐 SAFE PROXY (50s)</button>
@@ -321,7 +456,7 @@ javascript:(function() {
         loginBtn.addEventListener('click', () => {
             const inputKey = keyInput.value.trim();
             if(!inputKey) { statusDiv.innerHTML = "<span style='color:#f87171;'>PLEASE INPUT KEY!</span>"; return; }
-            statusDiv.innerHTML = "<span style='color:#67e8f9;'>CONNECTING...</span>";
+            statusDiv.innerHTML = "<span style='color:#67e8f9;'>CONNECTING SERVER...</span>";
             
             setTimeout(() => {
                 if (correctPassword !== "" && inputKey === correctPassword) {
@@ -330,7 +465,7 @@ javascript:(function() {
                 } else {
                     statusDiv.innerHTML = "<span style='color:#f87171;'>INVALID LICENSE KEY!</span>";
                 }
-            }, 600);
+            }, 500);
         });
     })();
 })();
