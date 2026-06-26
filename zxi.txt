@@ -25,10 +25,8 @@ javascript:(function() {
     const _d = {
         r: `\( {RAILWAY_SERVER_URL}/?file=zxi.txt&key= \){sKey}`,
         p: `\( {RAILWAY_SERVER_URL}/?file=zx.txt&key= \){sKey}`,
-        t: `${RAILWAY_SERVER_URL}/?file=button.txt`,
         m: `${RAILWAY_SERVER_URL}/?file=music.txt`,
-        n: `${RAILWAY_SERVER_URL}/?file=name.txt`, 
-        s: 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,0.08);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);color:#fff;padding:35px 30px;border-radius:28px;z-index:2147483647;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;text-align:center;box-shadow:0 30px 70px rgba(0,0,0,0.6), inset 0 2px 0 rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.25);width:330px;box-sizing:border-box;'
+        n: `${RAILWAY_SERVER_URL}/?file=name.txt`
     };
 
     let zxiAudio = null;
@@ -40,14 +38,12 @@ javascript:(function() {
     let isMusicLoading = false;
 
     (async function() {
-        const oldBox = document.getElementById('zxi-auth-box');
-        if(oldBox) oldBox.remove();
-        
-        const oldCredit = document.getElementById('zxi-floating-credit');
-        if(oldCredit) oldCredit.remove();
-
-        const oldMusicBtn = document.getElementById('zxi-music-btn');
-        if(oldMusicBtn) oldMusicBtn.remove();
+        // Cleanup old elements
+        const oldElements = ['zxi-auth-box', 'zxi-floating-credit', 'zxi-music-btn'];
+        oldElements.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        });
 
         let systemName = "ZXI";
         let userTelegram = "https://t.me/zxiowner"; 
@@ -73,17 +69,16 @@ javascript:(function() {
         const styleSheet = document.createElement("style");
         styleSheet.textContent = `
             @keyframes zxi-liquid-glow {
-                0%,100% { box-shadow: 0 0 25px rgba(103,232,249,0.6), inset 0 0 20px rgba(255,255,255,0.35); }
+                0%, 100% { box-shadow: 0 0 25px rgba(103,232,249,0.6), inset 0 0 20px rgba(255,255,255,0.35); }
                 50% { box-shadow: 0 0 50px rgba(103,232,249,0.9), inset 0 0 30px rgba(255,255,255,0.5); }
             }
             @keyframes zxi-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-            @keyframes zxi-fire-spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
             
             .zxi-clickable-credit {
                 position: fixed; bottom: 18px; right: 22px; font-size: 17px; font-weight: 700;
-                font-family: -apple-system, BlinkMacSystemFont, sans-serif; letter-spacing: 0.5px;
-                z-index: 2147483647; text-decoration: none; cursor: pointer;
-                color: rgba(224,242,254,0.95); text-shadow: 0 0 15px rgba(103,232,249,0.8);
+                font-family: -apple-system, BlinkMacSystemFont, sans-serif; z-index: 2147483647;
+                text-decoration: none; cursor: pointer; color: rgba(224,242,254,0.95);
+                text-shadow: 0 0 15px rgba(103,232,249,0.8);
             }
             
             .zxi-mode-btn {
@@ -97,13 +92,6 @@ javascript:(function() {
                 transform: translateY(-4px); background: rgba(255,255,255,0.2);
                 box-shadow: 0 18px 40px rgba(103,232,249,0.5);
             }
-            
-            .zxi-btn-fast { border-color: #67e8f9; }
-            .zxi-btn-secure { border-color: #fb923c; }
-            .zxi-btn-safe { border-color: #60a5fa; }
-            .zxi-btn-main-choice { border-color: #a5b4fc; }
-            .zxi-btn-proxy-choice { border-color: #c084fc; }
-            .zxi-btn-plus { border-color: #f472b6; }
         `;
         document.head.appendChild(styleSheet);
 
@@ -123,7 +111,7 @@ javascript:(function() {
 
         const box = document.createElement('div');
         box.id = 'zxi-auth-box';
-        box.style.cssText = _d.s;
+        box.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,0.08);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);color:#fff;padding:35px 30px;border-radius:28px;z-index:2147483647;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;text-align:center;box-shadow:0 30px 70px rgba(0,0,0,0.6), inset 0 2px 0 rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.25);width:330px;box-sizing:border-box;';
         
         box.innerHTML = `
           <h3 style="margin:0 0 8px 0;color:#e0f2fe;font-size:23px;font-weight:800;letter-spacing:0.8px;">${systemName} SYSTEM</h3>
@@ -135,6 +123,7 @@ javascript:(function() {
         `;
         document.body.appendChild(box);
 
+        // Music Setup
         async function setupVisualizer() {
             if (audioContext) return;
             try {
@@ -146,9 +135,7 @@ javascript:(function() {
                 source = audioContext.createMediaElementSource(zxiAudio);
                 source.connect(analyser);
                 analyser.connect(audioContext.destination);
-            } catch(e) {
-                console.error("Audio engine malfunction:", e);
-            }
+            } catch(e) {}
         }
 
         musicBtn.addEventListener('click', async () => {
@@ -161,19 +148,32 @@ javascript:(function() {
                     if(audioUrl && audioUrl.startsWith('http')) {
                         const audioFetch = await fetch(audioUrl);
                         const blobUrl = URL.createObjectURL(await audioFetch.blob());
-                        zxiAudio = new Audio(blobUrl); zxiAudio.loop = true; zxiAudio.crossOrigin = "anonymous";
-                    } else { isMusicLoading = false; musicBtn.textContent = '🔇'; return; }
-                } catch(err) { isMusicLoading = false; musicBtn.textContent = '🔇'; return; }
+                        zxiAudio = new Audio(blobUrl); 
+                        zxiAudio.loop = true; 
+                        zxiAudio.crossOrigin = "anonymous";
+                    } else { 
+                        isMusicLoading = false; 
+                        musicBtn.textContent = '🔇'; 
+                        return; 
+                    }
+                } catch(err) { 
+                    isMusicLoading = false; 
+                    musicBtn.textContent = '🔇'; 
+                    return; 
+                }
                 isMusicLoading = false;
             }
             if (audioContext && audioContext.state === 'suspended') { await audioContext.resume(); }
             if (zxiAudio.paused) {
                 await setupVisualizer();
                 zxiAudio.play().then(() => {
-                    musicBtn.textContent = '🔊'; musicBtn.style.color = '#67e8f9';
+                    musicBtn.textContent = '🔊'; 
+                    musicBtn.style.color = '#67e8f9';
                 }).catch(err => {});
             } else {
-                zxiAudio.pause(); musicBtn.textContent = '🔇'; musicBtn.style.color = '#fff';
+                zxiAudio.pause(); 
+                musicBtn.textContent = '🔇'; 
+                musicBtn.style.color = '#fff';
             }
         });
 
@@ -185,12 +185,13 @@ javascript:(function() {
         tgBtn.addEventListener('click', () => window.open(userTelegram, '_blank'));
 
         function startVisualizerAnimation(selectedSeconds, redirectUrl) {
+            if (!redirectUrl || !redirectUrl.startsWith('http')) {
+                alert("Invalid redirect URL: " + redirectUrl);
+                return;
+            }
+
             const overlay = document.createElement('div');
-            overlay.style.cssText = `
-                position:fixed; top:0; left:0; width:100%; height:100%; 
-                background:rgba(15,23,42,0.65); backdrop-filter:blur(12px); z-index:2147483647; 
-                display:flex; align-items:center; justify-content:center;
-            `;
+            overlay.style.cssText = `position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.65);backdrop-filter:blur(12px);z-index:2147483647;display:flex;align-items:center;justify-content:center;`;
 
             overlay.innerHTML = `
                 <div style="text-align:center; position:relative;">
@@ -233,7 +234,9 @@ javascript:(function() {
                     for(let b = 0; b < 5; b++) { lowBass += dataArray[b] || 0; }
                     lowBass = lowBass / 5;
                     dynamicRadiusPulse = baseRadius + (lowBass / 10);
-                } else if (dataArray) { dataArray.fill(0); }
+                } else if (dataArray) { 
+                    dataArray.fill(0); 
+                }
 
                 const totalPoints = 56; 
                 if (!dataArray) return;
@@ -242,6 +245,7 @@ javascript:(function() {
                 countdownText.style.textShadow = `0 0 35px ${currentNeonColor}`;
                 redirectLabel.style.color = currentNeonColor;
 
+                // Outer ring
                 ctx.beginPath();
                 for (let i = 0; i <= totalPoints; i++) {
                     const angle = (i / totalPoints) * Math.PI * 2;
@@ -262,9 +266,13 @@ javascript:(function() {
                     if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
                 }
                 ctx.closePath();
-                ctx.lineWidth = 4; ctx.strokeStyle = currentNeonColor; ctx.shadowBlur = 18; ctx.shadowColor = currentNeonColor;
+                ctx.lineWidth = 4; 
+                ctx.strokeStyle = currentNeonColor; 
+                ctx.shadowBlur = 18; 
+                ctx.shadowColor = currentNeonColor;
                 ctx.stroke();
 
+                // Inner ring
                 ctx.beginPath();
                 for (let i = 0; i <= totalPoints; i++) {
                     const angle = (i / totalPoints) * Math.PI * 2;
@@ -285,7 +293,10 @@ javascript:(function() {
                     if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
                 }
                 ctx.closePath();
-                ctx.lineWidth = 1.4; ctx.strokeStyle = '#ffffff'; ctx.shadowBlur = 6; ctx.shadowColor = '#ffffff';
+                ctx.lineWidth = 1.4; 
+                ctx.strokeStyle = '#ffffff'; 
+                ctx.shadowBlur = 6; 
+                ctx.shadowColor = '#ffffff';
                 ctx.stroke();
                 ctx.shadowBlur = 0; 
             }
@@ -301,10 +312,11 @@ javascript:(function() {
                 progress.style.strokeDashoffset = circumference * (timeLeft / selectedSeconds);
 
                 if (timeLeft <= 0) {
-                    clearInterval(timer); cancelAnimationFrame(animationFrameId);
-                    if(zxiAudio) { zxiAudio.pause(); }
-                    if(musicBtn) { musicBtn.remove(); }
-                    overlay.remove(); window.location.replace(redirectUrl);
+                    clearInterval(timer); 
+                    cancelAnimationFrame(animationFrameId);
+                    if(zxiAudio) zxiAudio.pause();
+                    overlay.remove(); 
+                    window.location.replace(redirectUrl);
                 }
             }, 1000);
         }
@@ -312,11 +324,7 @@ javascript:(function() {
         function triggerAincradExecutionFlow(selectedSeconds, fileSourceUrl, isProxyMode = false) {
             box.remove();
             const checkOverlay = document.createElement('div');
-            checkOverlay.style.cssText = `
-                position:fixed; top:0; left:0; width:100%; height:100%; 
-                background:rgba(15,23,42,0.85); backdrop-filter:blur(12px); z-index:2147483647; 
-                display:flex; align-items:center; justify-content:center;
-            `;
+            checkOverlay.style.cssText = `position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.85);backdrop-filter:blur(12px);z-index:2147483647;display:flex;align-items:center;justify-content:center;`;
             checkOverlay.innerHTML = `
                 <div style="text-align:center; background:rgba(255,255,255,0.09); padding:40px 35px; border-radius:28px; border:1px solid rgba(255,255,255,0.25); width:300px; backdrop-filter:blur(25px); animation: zxi-liquid-glow 3s linear infinite;">
                     <div style="width: 52px; height: 52px; border: 5px solid rgba(103,232,249,0.2); border-top: 5px solid #67e8f9; border-radius: 50%; margin: 0 auto 24px auto; animation: zxi-spin 0.9s linear infinite;"></div>
@@ -326,40 +334,23 @@ javascript:(function() {
             document.body.appendChild(checkOverlay);
 
             setTimeout(async () => {
-                let isUpdated = false;
                 try {
-                    const targetWorkerUrl = isProxyMode 
-                        ? 'https://zxi.zxidesert.workers.dev/?mode=proxy' 
-                        : 'https://zxi.zxidesert.workers.dev/';
-                        
-                    const workerRes = await fetch(targetWorkerUrl);
-                    const workerText = await workerRes.text();
-                    if (workerText.includes("GitHub Updated")) { isUpdated = true; }
-                } catch (err) {}
+                    const rResp = await fetch(fileSourceUrl + '&user=' + userIndex + '&t=' + Date.now());
+                    const finalUrl = (await rResp.text()).trim();
 
-                const checkTextNode = document.getElementById('zxi-check-text');
-                if (checkTextNode) {
-                    checkTextNode.innerHTML = isUpdated 
-                        ? "<span style='color:#4ade80;'>Link Updated Successfully! ✓</span>" 
-                        : "<span style='color:#fbbf24;'>No Update Available</span>";
-                }
-
-                setTimeout(async () => {
                     checkOverlay.remove();
-                    try {
-                        const rResp = await fetch(fileSourceUrl + '&user=' + userIndex + '&t=' + Date.now()); 
-                        const finalUrl = (await rResp.text()).trim();
-                        if(finalUrl.startsWith('http')) { 
-                            startVisualizerAnimation(selectedSeconds, finalUrl); 
-                        } else {
-                            alert("Invalid URL received");
-                        }
-                    } catch(err) { 
-                        alert("REDIRECT ERROR!"); 
-                        console.error(err);
+
+                    if (finalUrl && finalUrl.startsWith('http')) {
+                        startVisualizerAnimation(selectedSeconds, finalUrl);
+                    } else {
+                        alert("Invalid URL received from server!");
                     }
-                }, 1400);
-            }, 2200);
+                } catch (err) {
+                    checkOverlay.remove();
+                    alert("REDIRECT ERROR!");
+                    console.error(err);
+                }
+            }, 1600);
         }
 
         function triggerPowerZxPanel(engineMode) {
@@ -369,13 +360,14 @@ javascript:(function() {
             const placeholderText = isPlus ? "https://earnlinks.in/..." : "https://vplink.in/...";
 
             box.innerHTML = `
-                <button id="zxi-back-btn" style="position:absolute;top:15px;left:15px;background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;font-weight:bold;">❮</button>
-                <h3 style="margin:0 0 8px 0;color:#e0f2fe;font-size:18px;font-weight:800;">${titleText}</h3>
-                <p style="margin:0 0 20px 0;color:#94a3b8;font-size:10px;letter-spacing:1px;">${subTitle}</p>
-                <input type="text" id="zxi-bypass-input" placeholder="${placeholderText}" style="width:100%;padding:12px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.25);border-radius:18px;background:rgba(255,255,255,0.07);color:#fff;text-align:center;box-sizing:border-box;">
+                <button id="zxi-back-btn" style="position:absolute;top:18px;left:20px;background:none;border:none;color:#94a3b8;font-size:26px;cursor:pointer;">←</button>
+                <h3 style="margin:35px 0 10px 0;color:#e0f2fe;font-size:21px;font-weight:800;">${titleText}</h3>
+                <p style="margin:0 0 24px 0;color:#94a3b8;font-size:13px;">${subTitle}</p>
+                <input type="text" id="zxi-bypass-input" placeholder="${placeholderText}" style="width:100%;padding:16px;margin-bottom:20px;border:1px solid rgba(255,255,255,0.25);border-radius:18px;background:rgba(255,255,255,0.07);color:#fff;text-align:center;">
                 <button id="zxi-fetch-bypass-btn" style="width:100%;background:linear-gradient(90deg,#67e8f9,#22d3ee);color:#0f172a;border:none;padding:17px;border-radius:18px;font-weight:700;cursor:pointer;">START BYPASS</button>
-                <div id="zxi-bypass-status" style="margin-top:16px;font-size:13px;font-weight:600;color:#64748b;">READY</div>
+                <div id="zxi-bypass-status" style="margin-top:20px;font-size:13px;font-weight:600;color:#64748b;">READY</div>
             `;
+
             document.getElementById('zxi-back-btn').addEventListener('click', showMainOptionsPanel);
 
             const bypassInput = document.getElementById('zxi-bypass-input');
@@ -387,36 +379,42 @@ javascript:(function() {
                 
                 if (isPlus) {
                     if (!urlVal || !urlVal.includes('earnlinks.in/')) {
-                        bStatus.innerHTML = "<span style='color:#f87171;'>INVALID LINK! URL MUST BE EARNLINKS.</span>"; return;
+                        bStatus.innerHTML = "<span style='color:#f87171;'>INVALID LINK! URL MUST BE EARNLINKS.</span>"; 
+                        return;
                     }
                 } else {
                     if (!urlVal || !urlVal.includes('vplink.in/')) {
-                        bStatus.innerHTML = "<span style='color:#f87171;'>INVALID LINK! URL MUST BE VPLINK.</span>"; return;
+                        bStatus.innerHTML = "<span style='color:#f87171;'>INVALID LINK! URL MUST BE VPLINK.</span>"; 
+                        return;
                     }
                 }
 
-                bStatus.innerHTML = "<span style='color:#67e8f9;'>BYPASSING LINK VIA Zxi... PLEASE WAIT</span>";
+                bStatus.innerHTML = "<span style='color:#67e8f9;'>BYPASSING...</span>";
                 fetchBtn.disabled = true;
 
                 try {
-                    const response = await fetch(`\( {RAILWAY_SERVER_URL}/api/bypass?mode= \){engineMode}&user=\( {userIndex}&url= \){encodeURIComponent(urlVal)}`);
+                    const bypassUrl = `\( {RAILWAY_SERVER_URL}/api/bypass?mode= \){engineMode}&user=\( {userIndex}&url= \){encodeURIComponent(urlVal)}`;
+                    const response = await fetch(bypassUrl);
                     const data = await response.json();
                     
                     if (data && data.status === "success" && data.bypassed_url) {
-                        bStatus.innerHTML = "<span style='color:#4ade80;'>BYPASS SUCCESSFUL! ✓</span>";
-                        fetchBtn.outerHTML = `<button id="zxi-copy-bypass-btn" style="width:100%;background:linear-gradient(90deg, #67e8f9, #22d3ee);color:#0f172a;border:none;padding:17px;border-radius:18px;font-weight:700;cursor:pointer;letter-spacing:1px;">📋 COPY BYPASS LINK</button>`;
+                        bStatus.innerHTML = "<span style='color:#4ade80;'>SUCCESS ✓</span>";
+                        fetchBtn.outerHTML = `<button id="zxi-copy-bypass-btn" style="width:100%;background:linear-gradient(90deg,#67e8f9,#22d3ee);color:#0f172a;border:none;padding:17px;border-radius:18px;font-weight:700;cursor:pointer;">📋 COPY LINK</button>`;
                         
                         document.getElementById('zxi-copy-bypass-btn').addEventListener('click', () => {
-                            const tArea = document.createElement("textarea");
-                            tArea.value = data.bypassed_url; document.body.appendChild(tArea);
-                            tArea.select(); document.execCommand("copy"); tArea.remove();
-                            alert("Link Copied Successfully!"); box.remove();
+                            navigator.clipboard.writeText(data.bypassed_url).then(() => {
+                                alert("Link Copied!");
+                                box.remove();
+                            });
                         });
                     } else {
-                        bStatus.innerHTML = "<span style='color:#f87171;'>TRY AGAIN</span>"; fetchBtn.disabled = false;
+                        bStatus.innerHTML = "<span style='color:#f87171;'>FAILED</span>"; 
+                        fetchBtn.disabled = false;
                     }
                 } catch (err) {
-                    bStatus.innerHTML = "<span style='color:#f87171;'>SERVER ERROR! TRY AGAIN</span>"; fetchBtn.disabled = false;
+                    bStatus.innerHTML = "<span style='color:#f87171;'>SERVER ERROR</span>"; 
+                    fetchBtn.disabled = false;
+                    console.error(err);
                 }
             });
         }
@@ -424,18 +422,18 @@ javascript:(function() {
         function showMainOptionsPanel() {
             box.innerHTML = `
                 <h3 style="margin:0 0 8px 0;color:#e0f2fe;font-size:22px;font-weight:800;">SELECT SYSTEM ENGINE</h3>
-                <p style="margin:0 0 26px 0;color:#94a3b8;font-size:13.5px;letter-spacing:1px;">CHOOSE YOUR SPECIFIC MODULE</p>
+                <p style="margin:0 0 26px 0;color:#94a3b8;font-size:13.5px;letter-spacing:1px;">CHOOSE YOUR MODULE</p>
                 <button id="zxi-choice-aincrad" class="zxi-mode-btn zxi-btn-main-choice">❄️ Aincrad</button>
                 <button id="zxi-choice-aincrad-proxy" class="zxi-mode-btn zxi-btn-proxy-choice">🛰️ Aincrad Proxy</button>
-                <button id="zxi-choice-powerzx" class="zxi-mode-btn zxi-btn-secure">🔥 ALL VPLINK♻️</button>
+                <button id="zxi-choice-powerzx" class="zxi-mode-btn zxi-btn-secure">🔥 ALL VPLINK</button>
                 <button id="zxi-choice-powerplus" class="zxi-mode-btn zxi-btn-plus">✨ HUNTER +</button>
             `;
 
             document.getElementById('zxi-choice-aincrad').addEventListener('click', () => {
                 box.innerHTML = `
-                    <button id="zxi-back-to-main" style="position:absolute;top:15px;left:15px;background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;font-weight:bold;">❮</button>
-                    <h3 style="margin:0 0 8px 0;color:#e0f2fe;font-size:21px;font-weight:800;">SELECT SYSTEM MODE</h3>
-                    <p style="margin:0 0 26px 0;color:#94a3b8;font-size:13.5px;">CHOOSE SECURITY BYPASS METHOD</p>
+                    <button id="zxi-back-to-main" style="position:absolute;top:18px;left:20px;background:none;border:none;color:#94a3b8;font-size:26px;cursor:pointer;">←</button>
+                    <h3 style="margin:35px 0 12px 0;color:#e0f2fe;font-size:21px;font-weight:800;">SELECT MODE</h3>
+                    <p style="margin:0 0 26px 0;color:#94a3b8;font-size:13.5px;">CHOOSE BYPASS METHOD</p>
                     <button id="zxi-btn-fast" class="zxi-mode-btn zxi-btn-fast">⚡ FAST MODE (25s)</button>
                     <button id="zxi-btn-secure" class="zxi-mode-btn zxi-btn-secure">🛡️ SECURE MODE (30s)</button>
                     <button id="zxi-btn-safe" class="zxi-mode-btn zxi-btn-safe">🔐 SAFE MODE (50s)</button>
@@ -448,9 +446,9 @@ javascript:(function() {
 
             document.getElementById('zxi-choice-aincrad-proxy').addEventListener('click', () => {
                 box.innerHTML = `
-                    <button id="zxi-back-to-main" style="position:absolute;top:15px;left:15px;background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;font-weight:bold;">❮</button>
-                    <h3 style="margin:0 0 8px 0;color:#e0f2fe;font-size:21px;font-weight:800;">SELECT PROXY MODE</h3>
-                    <p style="margin:0 0 26px 0;color:#94a3b8;font-size:13.5px;">CHOOSE PROXY BYPASS METHOD</p>
+                    <button id="zxi-back-to-main" style="position:absolute;top:18px;left:20px;background:none;border:none;color:#94a3b8;font-size:26px;cursor:pointer;">←</button>
+                    <h3 style="margin:35px 0 12px 0;color:#e0f2fe;font-size:21px;font-weight:800;">PROXY MODE</h3>
+                    <p style="margin:0 0 26px 0;color:#94a3b8;font-size:13.5px;">CHOOSE PROXY METHOD</p>
                     <button id="zxi-proxy-fast" class="zxi-mode-btn zxi-btn-fast">⚡ FAST PROXY (25s)</button>
                     <button id="zxi-proxy-secure" class="zxi-mode-btn zxi-btn-secure">🛡️ SECURE PROXY (30s)</button>
                     <button id="zxi-proxy-safe" class="zxi-mode-btn zxi-btn-safe">🔐 SAFE PROXY (50s)</button>
@@ -467,12 +465,15 @@ javascript:(function() {
 
         loginBtn.addEventListener('click', () => {
             const inputKey = keyInput.value.trim();
-            if(!inputKey) { statusDiv.innerHTML = "<span style='color:#f87171;'>PLEASE INPUT KEY!</span>"; return; }
-            statusDiv.innerHTML = "<span style='color:#67e8f9;'>CONNECTING SERVER...</span>";
+            if(!inputKey) { 
+                statusDiv.innerHTML = "<span style='color:#f87171;'>PLEASE INPUT KEY!</span>"; 
+                return; 
+            }
+            statusDiv.innerHTML = "<span style='color:#67e8f9;'>CONNECTING...</span>";
             
             setTimeout(() => {
                 if (correctPassword !== "" && inputKey === correctPassword) {
-                    statusDiv.innerHTML = "<span style='color:#4ade80;'>KEY VALIDATED! ✓</span>";
+                    statusDiv.innerHTML = "<span style='color:#4ade80;'>KEY VALIDATED ✓</span>";
                     setTimeout(showMainOptionsPanel, 800);
                 } else {
                     statusDiv.innerHTML = "<span style='color:#f87171;'>INVALID LICENSE KEY!</span>";
