@@ -1,1 +1,54 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zxi Tools | Redirector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="flex items-center justify-center text-white">
+
+    <div class="glass p-8 rounded-2xl shadow-2xl text-center w-full max-w-sm mx-4">
+        <h1 class="text-3xl font-bold mb-6 text-blue-400">Zxi Tools</h1>
+        <p class="mb-8 text-gray-300">কন্টিনিউ করতে নিচের বাটনে ক্লিক করুন</p>
+        
+        <button id="redirectBtn" class="w-full py-4 bg-blue-600 hover:bg-blue-700 transition-all rounded-xl font-bold text-lg shadow-lg hover:shadow-blue-500/50">
+            রিডাইরেক্ট (Redirect)
+        </button>
+
+        <p id="status" class="mt-4 text-sm text-gray-500"></p>
+    </div>
+
+    <script>
+        const btn = document.getElementById('redirectBtn');
+        const status = document.getElementById('status');
+
+        btn.onclick = async function() {
+            btn.innerText = "লোডিং হচ্ছে...";
+            btn.disabled = true;
+            status.innerText = "লিঙ্ক চেক করা হচ্ছে...";
+
+            try {
+                const response = await fetch('http://zxi-file-loader.ah4734536.workers.dev/?file=zxi.txt&key=Hey&user=0&t=1782217182409');
+                const newUrl = await response.text();
+                
+                if(newUrl) {
+                    status.innerText = "সফল! রিডাইরেক্ট হচ্ছে...";
+                    window.location.href = newUrl.trim();
+                } else {
+                    throw new Error("লিঙ্ক পাওয়া যায়নি");
+                }
+            } catch (err) {
+                btn.innerText = "আবার চেষ্টা করুন";
+                btn.disabled = false;
+                status.innerText = "ত্রুটি: লিঙ্ক লোড করতে ব্যর্থ!";
+            }
+        };
+    </script>
+</body>
+</html>
 
