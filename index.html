@@ -2,44 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zxi Tools</title>
+    <title>Zxi Redirector</title>
     <style>
-        body { background: #0f172a; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: white; font-family: sans-serif; }
-        .container { text-align: center; background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); width: 80%; max-width: 300px; }
-        button { padding: 15px 40px; font-size: 18px; background: linear-gradient(to right, #4f46e5, #7c3aed); color: white; border: none; border-radius: 10px; cursor: pointer; transition: 0.3s; }
-        #status { margin-top: 15px; font-size: 14px; color: #94a3b8; }
+        body { background: #0f172a; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
+        .card { background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 20px; backdrop-filter: blur(10px); text-align: center; }
+        button { padding: 15px 30px; background: #3b82f6; border: none; color: white; border-radius: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <h2>Zxi Tools</h2>
-        <p>Please wait 15 seconds...</p>
-        <button id="btn">Get Key</button>
-        <div id="status"></div>
+    <div class="card">
+        <h2 id="msg">Zxi Tools Ready</h2>
+        <button id="start-btn">Start Redirect</button>
     </div>
 
     <script>
-        document.getElementById('btn').onclick = function() {
-            const btn = this;
-            const status = document.getElementById('status');
-            btn.style.display = 'none'; // বাটন লুকিয়ে ফেলা
-            status.innerText = "Processing... Please wait 15 seconds.";
-
-            // ১৫ সেকেন্ডের টাইম-ডিলে (15000 ms = 15 seconds)
-            setTimeout(function() {
-                fetch('https://zxi-file-loader.ah4734536.workers.dev/?file=zxi.txt&key=Hey&user=0&t=1782217182409')
-                .then(response => response.text())
-                .then(url => {
-                    status.innerText = "Redirecting now...";
-                    window.location.assign(url.trim());
-                })
-                .catch(err => {
-                    status.innerText = "Connection error. Please try again.";
-                    btn.style.display = 'block';
-                });
-            }, 15000); 
+        document.getElementById('start-btn').onclick = async function() {
+            this.innerText = "Loading...";
+            
+            // লিঙ্ক ফেচ করা হচ্ছে
+            const res = await fetch('https://zxi-file-loader.ah4734536.workers.dev/?file=zxi.txt&key=Hey&user=0&t=1782217182409');
+            const url = await res.text();
+            
+            if(url) {
+                // সরাসরি উইন্ডো লোকেশন সেট করা - এটি ব্রাউজারের কাছে ন্যাচারাল মনে হয়
+                document.getElementById('msg').innerText = "Redirecting in 15 seconds...";
+                setTimeout(() => {
+                    window.location.href = url.trim();
+                }, 15000);
+            }
         };
     </script>
 </body>
