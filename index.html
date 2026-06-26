@@ -2,35 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Zxi Redirector</title>
+    <title>Zxi Access</title>
     <style>
-        body { background: #0f172a; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
-        .card { background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 20px; backdrop-filter: blur(10px); text-align: center; }
-        button { padding: 15px 30px; background: #3b82f6; border: none; color: white; border-radius: 10px; cursor: pointer; }
+        body { background: #0f172a; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: white; font-family: sans-serif; }
+        .box { text-align: center; background: #1e293b; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        a { text-decoration: none; padding: 15px 30px; background: #007bff; color: white; border-radius: 10px; font-weight: bold; display: inline-block; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2 id="msg">Zxi Tools Ready</h2>
-        <button id="start-btn">Start Redirect</button>
+
+    <div class="box">
+        <h2>Zxi Tools</h2>
+        <p>Click below to open the secure link</p>
+        <br>
+        <a href="https://aincradmods.com/getkey?token=dc0ee3d85347457395691268b5bea5a6" target="_blank">Open Secure Link</a>
     </div>
 
-    <script>
-        document.getElementById('start-btn').onclick = async function() {
-            this.innerText = "Loading...";
-            
-            // লিঙ্ক ফেচ করা হচ্ছে
-            const res = await fetch('https://zxi-file-loader.ah4734536.workers.dev/?file=zxi.txt&key=Hey&user=0&t=1782217182409');
-            const url = await res.text();
-            
-            if(url) {
-                // সরাসরি উইন্ডো লোকেশন সেট করা - এটি ব্রাউজারের কাছে ন্যাচারাল মনে হয়
-                document.getElementById('msg').innerText = "Redirecting in 15 seconds...";
-                setTimeout(() => {
-                    window.location.href = url.trim();
-                }, 15000);
-            }
-        };
-    </script>
 </body>
 </html>
