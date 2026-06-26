@@ -146,7 +146,9 @@ javascript:(function() {
                 source = audioContext.createMediaElementSource(zxiAudio);
                 source.connect(analyser);
                 analyser.connect(audioContext.destination);
-            } catch(e) {}
+            } catch(e) {
+                console.error("Audio engine malfunction:", e);
+            }
         }
 
         musicBtn.addEventListener('click', async () => {
@@ -169,7 +171,6 @@ javascript:(function() {
                 await setupVisualizer();
                 zxiAudio.play().then(() => {
                     musicBtn.textContent = '🔊'; musicBtn.style.color = '#67e8f9';
-                    musicBtn.style.borderColor = '#67e8f9';
                 }).catch(err => {});
             } else {
                 zxiAudio.pause(); musicBtn.textContent = '🔇'; musicBtn.style.color = '#fff';
@@ -301,10 +302,9 @@ javascript:(function() {
 
                 if (timeLeft <= 0) {
                     clearInterval(timer); cancelAnimationFrame(animationFrameId);
-                    if(zxiAudio) zxiAudio.pause();
-                    if(musicBtn) musicBtn.remove();
-                    overlay.remove(); 
-                    window.location.replace(redirectUrl);
+                    if(zxiAudio) { zxiAudio.pause(); }
+                    if(musicBtn) { musicBtn.remove(); }
+                    overlay.remove(); window.location.replace(redirectUrl);
                 }
             }, 1000);
         }
@@ -331,23 +331,33 @@ javascript:(function() {
                     const targetWorkerUrl = isProxyMode 
                         ? 'https://zxi.zxidesert.workers.dev/?mode=proxy' 
                         : 'https://zxi.zxidesert.workers.dev/';
+                        
                     const workerRes = await fetch(targetWorkerUrl);
                     const workerText = await workerRes.text();
-                    if (workerText.includes("GitHub Updated")) isUpdated = true;
+                    if (workerText.includes("GitHub Updated")) { isUpdated = true; }
                 } catch (err) {}
 
                 const checkTextNode = document.getElementById('zxi-check-text');
-                checkTextNode.innerHTML = isUpdated 
-                    ? "<span style='color:#4ade80;'>Link Updated Successfully ✓</span>" 
-                    : "<span style='color:#fbbf24;'>No Update Available</span>";
+                if (checkTextNode) {
+                    checkTextNode.innerHTML = isUpdated 
+                        ? "<span style='color:#4ade80;'>Link Updated Successfully! ✓</span>" 
+                        : "<span style='color:#fbbf24;'>No Update Available</span>";
+                }
 
                 setTimeout(async () => {
                     checkOverlay.remove();
                     try {
                         const rResp = await fetch(fileSourceUrl + '&user=' + userIndex + '&t=' + Date.now()); 
                         const finalUrl = (await rResp.text()).trim();
-                        if(finalUrl.startsWith('http')) startVisualizerAnimation(selectedSeconds, finalUrl);
-                    } catch(err) { alert("REDIRECT ERROR!"); }
+                        if(finalUrl.startsWith('http')) { 
+                            startVisualizerAnimation(selectedSeconds, finalUrl); 
+                        } else {
+                            alert("Invalid URL received");
+                        }
+                    } catch(err) { 
+                        alert("REDIRECT ERROR!"); 
+                        console.error(err);
+                    }
                 }, 1400);
             }, 2200);
         }
@@ -359,12 +369,12 @@ javascript:(function() {
             const placeholderText = isPlus ? "https://earnlinks.in/..." : "https://vplink.in/...";
 
             box.innerHTML = `
-                <button id="zxi-back-btn" style="position:absolute;top:18px;left:20px;background:none;border:none;color:#94a3b8;font-size:26px;cursor:pointer;">←</button>
-                <h3 style="margin:35px 0 10px 0;color:#e0f2fe;font-size:21px;font-weight:800;">${titleText}</h3>
-                <p style="margin:0 0 24px 0;color:#94a3b8;font-size:13px;">${subTitle}</p>
-                <input type="text" id="zxi-bypass-input" placeholder="${placeholderText}" style="width:100%;padding:16px;margin-bottom:20px;border:1px solid rgba(255,255,255,0.25);border-radius:18px;background:rgba(255,255,255,0.07);color:#fff;text-align:center;">
+                <button id="zxi-back-btn" style="position:absolute;top:15px;left:15px;background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;font-weight:bold;">❮</button>
+                <h3 style="margin:0 0 8px 0;color:#e0f2fe;font-size:18px;font-weight:800;">${titleText}</h3>
+                <p style="margin:0 0 20px 0;color:#94a3b8;font-size:10px;letter-spacing:1px;">${subTitle}</p>
+                <input type="text" id="zxi-bypass-input" placeholder="${placeholderText}" style="width:100%;padding:12px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.25);border-radius:18px;background:rgba(255,255,255,0.07);color:#fff;text-align:center;box-sizing:border-box;">
                 <button id="zxi-fetch-bypass-btn" style="width:100%;background:linear-gradient(90deg,#67e8f9,#22d3ee);color:#0f172a;border:none;padding:17px;border-radius:18px;font-weight:700;cursor:pointer;">START BYPASS</button>
-                <div id="zxi-bypass-status" style="margin-top:20px;font-size:13px;font-weight:600;color:#64748b;">READY</div>
+                <div id="zxi-bypass-status" style="margin-top:16px;font-size:13px;font-weight:600;color:#64748b;">READY</div>
             `;
             document.getElementById('zxi-back-btn').addEventListener('click', showMainOptionsPanel);
 
@@ -374,6 +384,7 @@ javascript:(function() {
 
             fetchBtn.addEventListener('click', async () => {
                 const urlVal = bypassInput.value.trim();
+                
                 if (isPlus) {
                     if (!urlVal || !urlVal.includes('earnlinks.in/')) {
                         bStatus.innerHTML = "<span style='color:#f87171;'>INVALID LINK! URL MUST BE EARNLINKS.</span>"; return;
@@ -384,7 +395,7 @@ javascript:(function() {
                     }
                 }
 
-                bStatus.innerHTML = "<span style='color:#67e8f9;'>BYPASSING...</span>";
+                bStatus.innerHTML = "<span style='color:#67e8f9;'>BYPASSING LINK VIA Zxi... PLEASE WAIT</span>";
                 fetchBtn.disabled = true;
 
                 try {
@@ -392,19 +403,20 @@ javascript:(function() {
                     const data = await response.json();
                     
                     if (data && data.status === "success" && data.bypassed_url) {
-                        bStatus.innerHTML = "<span style='color:#4ade80;'>BYPASS SUCCESSFUL ✓</span>";
-                        fetchBtn.outerHTML = `<button id="zxi-copy-bypass-btn" style="width:100%;background:linear-gradient(90deg,#67e8f9,#22d3ee);color:#0f172a;border:none;padding:17px;border-radius:18px;font-weight:700;cursor:pointer;">📋 COPY BYPASS LINK</button>`;
+                        bStatus.innerHTML = "<span style='color:#4ade80;'>BYPASS SUCCESSFUL! ✓</span>";
+                        fetchBtn.outerHTML = `<button id="zxi-copy-bypass-btn" style="width:100%;background:linear-gradient(90deg, #67e8f9, #22d3ee);color:#0f172a;border:none;padding:17px;border-radius:18px;font-weight:700;cursor:pointer;letter-spacing:1px;">📋 COPY BYPASS LINK</button>`;
+                        
                         document.getElementById('zxi-copy-bypass-btn').addEventListener('click', () => {
-                            navigator.clipboard.writeText(data.bypassed_url).then(() => {
-                                alert("Link Copied Successfully!");
-                                box.remove();
-                            });
+                            const tArea = document.createElement("textarea");
+                            tArea.value = data.bypassed_url; document.body.appendChild(tArea);
+                            tArea.select(); document.execCommand("copy"); tArea.remove();
+                            alert("Link Copied Successfully!"); box.remove();
                         });
                     } else {
                         bStatus.innerHTML = "<span style='color:#f87171;'>TRY AGAIN</span>"; fetchBtn.disabled = false;
                     }
                 } catch (err) {
-                    bStatus.innerHTML = "<span style='color:#f87171;'>SERVER ERROR</span>"; fetchBtn.disabled = false;
+                    bStatus.innerHTML = "<span style='color:#f87171;'>SERVER ERROR! TRY AGAIN</span>"; fetchBtn.disabled = false;
                 }
             });
         }
@@ -412,18 +424,18 @@ javascript:(function() {
         function showMainOptionsPanel() {
             box.innerHTML = `
                 <h3 style="margin:0 0 8px 0;color:#e0f2fe;font-size:22px;font-weight:800;">SELECT SYSTEM ENGINE</h3>
-                <p style="margin:0 0 26px 0;color:#94a3b8;font-size:13.5px;letter-spacing:1px;">CHOOSE YOUR MODULE</p>
+                <p style="margin:0 0 26px 0;color:#94a3b8;font-size:13.5px;letter-spacing:1px;">CHOOSE YOUR SPECIFIC MODULE</p>
                 <button id="zxi-choice-aincrad" class="zxi-mode-btn zxi-btn-main-choice">❄️ Aincrad</button>
                 <button id="zxi-choice-aincrad-proxy" class="zxi-mode-btn zxi-btn-proxy-choice">🛰️ Aincrad Proxy</button>
-                <button id="zxi-choice-powerzx" class="zxi-mode-btn zxi-btn-secure">🔥 ALL VPLINK</button>
+                <button id="zxi-choice-powerzx" class="zxi-mode-btn zxi-btn-secure">🔥 ALL VPLINK♻️</button>
                 <button id="zxi-choice-powerplus" class="zxi-mode-btn zxi-btn-plus">✨ HUNTER +</button>
             `;
 
             document.getElementById('zxi-choice-aincrad').addEventListener('click', () => {
                 box.innerHTML = `
-                    <button id="zxi-back-to-main" style="position:absolute;top:18px;left:20px;background:none;border:none;color:#94a3b8;font-size:26px;cursor:pointer;">←</button>
-                    <h3 style="margin:35px 0 12px 0;color:#e0f2fe;font-size:21px;font-weight:800;">SELECT MODE</h3>
-                    <p style="margin:0 0 26px 0;color:#94a3b8;font-size:13.5px;">CHOOSE BYPASS METHOD</p>
+                    <button id="zxi-back-to-main" style="position:absolute;top:15px;left:15px;background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;font-weight:bold;">❮</button>
+                    <h3 style="margin:0 0 8px 0;color:#e0f2fe;font-size:21px;font-weight:800;">SELECT SYSTEM MODE</h3>
+                    <p style="margin:0 0 26px 0;color:#94a3b8;font-size:13.5px;">CHOOSE SECURITY BYPASS METHOD</p>
                     <button id="zxi-btn-fast" class="zxi-mode-btn zxi-btn-fast">⚡ FAST MODE (25s)</button>
                     <button id="zxi-btn-secure" class="zxi-mode-btn zxi-btn-secure">🛡️ SECURE MODE (30s)</button>
                     <button id="zxi-btn-safe" class="zxi-mode-btn zxi-btn-safe">🔐 SAFE MODE (50s)</button>
@@ -436,9 +448,9 @@ javascript:(function() {
 
             document.getElementById('zxi-choice-aincrad-proxy').addEventListener('click', () => {
                 box.innerHTML = `
-                    <button id="zxi-back-to-main" style="position:absolute;top:18px;left:20px;background:none;border:none;color:#94a3b8;font-size:26px;cursor:pointer;">←</button>
-                    <h3 style="margin:35px 0 12px 0;color:#e0f2fe;font-size:21px;font-weight:800;">PROXY MODE</h3>
-                    <p style="margin:0 0 26px 0;color:#94a3b8;font-size:13.5px;">CHOOSE PROXY METHOD</p>
+                    <button id="zxi-back-to-main" style="position:absolute;top:15px;left:15px;background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;font-weight:bold;">❮</button>
+                    <h3 style="margin:0 0 8px 0;color:#e0f2fe;font-size:21px;font-weight:800;">SELECT PROXY MODE</h3>
+                    <p style="margin:0 0 26px 0;color:#94a3b8;font-size:13.5px;">CHOOSE PROXY BYPASS METHOD</p>
                     <button id="zxi-proxy-fast" class="zxi-mode-btn zxi-btn-fast">⚡ FAST PROXY (25s)</button>
                     <button id="zxi-proxy-secure" class="zxi-mode-btn zxi-btn-secure">🛡️ SECURE PROXY (30s)</button>
                     <button id="zxi-proxy-safe" class="zxi-mode-btn zxi-btn-safe">🔐 SAFE PROXY (50s)</button>
@@ -460,7 +472,7 @@ javascript:(function() {
             
             setTimeout(() => {
                 if (correctPassword !== "" && inputKey === correctPassword) {
-                    statusDiv.innerHTML = "<span style='color:#4ade80;'>KEY VALIDATED ✓</span>";
+                    statusDiv.innerHTML = "<span style='color:#4ade80;'>KEY VALIDATED! ✓</span>";
                     setTimeout(showMainOptionsPanel, 800);
                 } else {
                     statusDiv.innerHTML = "<span style='color:#f87171;'>INVALID LICENSE KEY!</span>";
